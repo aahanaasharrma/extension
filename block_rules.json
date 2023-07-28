@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "rule_resources": [
+    {
+      "id": 1,
+      "enabled": true,
+      "rule": {
+        "action": {
+          "type": "block"
+        },
+        "condition": {
+          "urlFilter": ""
+        }
+      }
+    }
+  ]
+}
