@@ -1,5 +1,4 @@
-// popup.js
-
+// options.js
 document.getElementById("blockWebsiteForm").addEventListener("submit", (event) => {
   event.preventDefault();
   const websiteInput = document.getElementById("websiteInput");

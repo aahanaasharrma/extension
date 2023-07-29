@@ -16,18 +16,6 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-// Block the page content if the website is blocked
-chrome.webNavigation.onCommitted.addListener((details) => {
-  const currentHostname = new URL(details.url).hostname.toLowerCase();
-  isWebsiteBlocked(currentHostname, (isBlocked) => {
-    if (isBlocked) {
-      // Block the page by redirecting it to a blocked page
-      const blockedPage = chrome.runtime.getURL("blocked.html");
-      chrome.tabs.update(details.tabId, { url: blockedPage });
-    }
-  });
-});
-
 // Function to check if a website is blocked
 function isWebsiteBlocked(hostname, callback) {
   chrome.storage.sync.get("blockedWebsites", (data) => {
@@ -40,7 +28,21 @@ function isWebsiteBlocked(hostname, callback) {
   });
 }
 
-// Listen for messages from the browser action popup
+// Block the page content if the website is blocked
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url) {
+    const currentHostname = new URL(changeInfo.url).hostname.toLowerCase();
+    isWebsiteBlocked(currentHostname, (isBlocked) => {
+      if (isBlocked) {
+        // Block the page by redirecting it to the blocked page
+        const blockedPage = chrome.runtime.getURL("blocked.html");
+        chrome.tabs.update(tabId, { url: blockedPage });
+      }
+    });
+  }
+});
+
+// Listen for messages from the popup (popup.js)
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "addBlockedWebsite") {
     const websiteToAdd = message.website;
@@ -57,14 +59,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
       });
     }
-  }
-  return true; // Indicates that the response will be sent asynchronously
-});
-
-// Listen for messages from the browser action popup
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "addBlockedWebsite") {
-    // ... (previous code)
   } else if (message.action === "removeBlockedWebsite") {
     const websiteToRemove = message.website;
     if (websiteToRemove) {
@@ -79,4 +73,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   return true; // Indicates that the response will be sent asynchronously
 });
+// Block the page content if the website is blocked
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url) {
+    const currentHostname = new URL(changeInfo.url).hostname.toLowerCase();
+    isWebsiteBlocked(currentHostname, (isBlocked) => {
+      if (isBlocked) {
+        // Block the page by redirecting it to the blocked page (using an absolute path)
+        const blockedPage = chrome.runtime.getURL("/src/blocked.html");
+        chrome.tabs.update(tabId, { url: blockedPage });
+      }
+    });
+  }
+});
 
+// ... (previous code)
