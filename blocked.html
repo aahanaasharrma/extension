@@ -1,10 +1,17 @@
-<!-- blocked.html -->
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Blocked Page</title>
+  <title>Website Blocker</title>
 </head>
 <body>
-  <h1>This website is blocked!</h1>
+  <h1>Website Blocker</h1>
+  <p>To block any website you would like:</p>
+  <form id="blockWebsiteForm">
+    <input type="text" id="websiteInput" placeholder="Enter website URL">
+    <button type="submit">Block Website</button>
+  </form>
+  <div id="message"></div>
+
+  <script src="popup.js"></script>
 </body>
 </html>
