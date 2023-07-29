@@ -60,3 +60,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   return true; // Indicates that the response will be sent asynchronously
 });
+
+// Listen for messages from the browser action popup
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "addBlockedWebsite") {
+    // ... (previous code)
+  } else if (message.action === "removeBlockedWebsite") {
+    const websiteToRemove = message.website;
+    if (websiteToRemove) {
+      chrome.storage.sync.get("blockedWebsites", (data) => {
+        let blockedWebsites = data.blockedWebsites || [];
+        blockedWebsites = blockedWebsites.filter((blockedSite) => blockedSite !== websiteToRemove);
+        chrome.storage.sync.set({ blockedWebsites }, () => {
+          sendResponse({ success: true });
+        });
+      });
+    }
+  }
+  return true; // Indicates that the response will be sent asynchronously
+});
+
