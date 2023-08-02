@@ -147,18 +147,14 @@ function sendAllImages() {
     const src = imgs[i].getAttribute('src');
     
     if (dataSrc) {
-      imageUrls.push(dataSrc);
+      sendUrl(dataSrc);
     }
     
     if (src) {
-      imageUrls.push(src);
+      sendUrl(src);
     }
   }  
   console.log(imgs)
-
-  for (const url of imageUrls) {
-    sendUrl(url);
-  }
 }
 
 function observeDynamicImages() {
